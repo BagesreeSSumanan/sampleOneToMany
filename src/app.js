@@ -65,21 +65,6 @@ app.use('/api', tutorialRouter);
      }
   });
 
-   tutorialRouter.get('/findTutorialById/:id',  async (req, res)=>{
-     try{
-         const id = req.params.id;
-        if (!id) {
-            return res.status(400).json({ message: "ID is required" });
-        }
-         const Tutorial =  await findTutorialById(id);
-         res.status(200).json({Tutorial: Tutorial});
- 
-     } catch(e){
-         console.log(e);
-         res.sendStatus(400);
-     }
-  });
-
  tutorialRouter.get('/findCommentById/:id', async (req, res) => {
   try {
     const id = req.params.id; // get the id from the URL
