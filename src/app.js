@@ -65,12 +65,12 @@ app.use('/api', tutorialRouter);
      }
   });
 
-   tutorialRouter.get('/findTutorialById',  async (req, res, next)=>{
+   tutorialRouter.get('/findTutorialById/:id',  async (req, res)=>{
      try{
-        if (!req.body) {
-          return res.sendStatus(400);
+         const id = req.params.id;
+        if (!id) {
+            return res.status(400).json({ message: "ID is required" });
         }
-         const id = req.body.id;
          const Tutorial =  await findTutorialById(id);
          res.status(200).json({Tutorial: Tutorial});
  
@@ -80,17 +80,23 @@ app.use('/api', tutorialRouter);
      }
   });
 
-  tutorialRouter.get('/findCommentById',  async (req, res, next)=>{
-     try{
-        if (!req.body) {
-          return res.sendStatus(400);
-        }
-         const id = req.body.id;
-         const Tutorial =  await findCommentById(id);
-         res.status(200).json({Tutorial: Tutorial});
- 
-     } catch(e){
-         console.log(e);
-         res.sendStatus(400);
-     }
-  });
+ tutorialRouter.get('/findCommentById/:id', async (req, res) => {
+  try {
+    const id = req.params.id; // get the id from the URL
+
+    if (!id) {
+      return res.status(400).json({ message: "ID is required" });
+    }
+
+    const comments = await findCommentById(id);
+
+    if (!comments) {
+      return res.status(404).json({ message: "Comments not found" });
+    }
+
+    res.status(200).json({ comments });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
