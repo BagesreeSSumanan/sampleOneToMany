@@ -101,30 +101,35 @@ const updateTutorial = async (id,tutorial,) => {
     }
     await currenttutorial.update({
        title: tutorial.title,
-      description: tutorial.description,
+      description: tutorial.description,},
+      {
+      where: { id: id } 
     });
-    console.log("Tutorial deleted successfully");
     return currenttutorial;
   } catch (err) {
-    console.log(">> Error while deleting comment: ", err);
+    console.log(">> Error while updating tutorials: ", err);
   }
 };
 const updateComment = async (id,comment,tutorialId) => {
   try {
-    const Currentcomment = await Comment.findByPk(id);
+     console.log("id",id);
+   const Currentcomment = await Comment.findByPk(id);
     if (!Currentcomment) {
       console.log("Comment not found");
       return null;
     }
-    await Comment.update({
-        name: comment.name,
-        text: comment.text,
-        tutorialId: tutorialId
+    await Currentcomment.update({
+      name: comment.name,
+      text: comment.text,
+      tutorialId:tutorialId,
+    }, {
+      where: { id: id } 
     });
+   // await comment.destroy();
     console.log("Comment deleted successfully");
-    return comment;
+    return Currentcomment;
   } catch (err) {
-    console.log(">> Error while deleting comment: ", err);
+    console.log(">> Error while updating comment: ", err);
   }
 };
 module.exports = { createTutorial ,createComment,GetAllTutorial,findTutorialById,findCommentById,deleteTutorialById,deleteCommentById,updateComment,updateTutorial};
