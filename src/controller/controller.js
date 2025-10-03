@@ -116,7 +116,7 @@ const updateComment = async (id,comment,tutorialId) => {
       console.log("Comment not found");
       return null;
     }
-    await comment.update({
+    await Comment.update({
         name: comment.name,
         text: comment.text,
         tutorialId: tutorialId
