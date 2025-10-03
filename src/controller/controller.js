@@ -126,7 +126,7 @@ const updateComment = async (id,comment,tutorialId) => {
       where: { id: id } 
     });
    // await comment.destroy();
-    console.log("Comment deleted successfully");
+    console.log("Comment updated successfully");
     return Currentcomment;
   } catch (err) {
     console.log(">> Error while updating comment: ", err);
