@@ -3,7 +3,7 @@ const config = require('./config/config');
 const app = express();
 require('dotenv').config();
 const tutorialRouter = express.Router();
-const {createTutorial,createComment,GetAllTutorial,findTutorialById,findCommentById}= require('./controller/controller');
+const {createTutorial,createComment,GetAllTutorial,findTutorialById,findCommentById,deleteTutorialById,deleteCommentById,updateComment,updateTutorial}= require('./controller/controller');
 app.use(express.json());
 
 const PORT = config.port;
@@ -86,4 +86,69 @@ app.use('/api', tutorialRouter);
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
+});
+// Delete a tutorial
+tutorialRouter.delete('/deleteTutorial/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const deletedCount = await deleteTutorialById(id);
+
+        if (!deletedCount) {
+            return res.status(404).json({ message: "Tutorial not found" });
+        }
+
+        res.status(200).json({ message: "Tutorial deleted successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+// Delete a comment
+tutorialRouter.delete('/deleteComment/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const deletedCount = await deleteCommentById(id);
+
+        if (!deletedCount) {
+            return res.status(404).json({ message: "Comment not found" });
+        }
+
+        res.status(200).json({ message: "Comment deleted successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+tutorialRouter.put('/updateTutorial/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const updateCount = await updateTutorial(id,req.body);
+
+        if (!updateCount) {
+            return res.status(404).json({ message: "Tutorial not found" });
+        }
+
+        res.status(200).json({ message: "Tutorial updated successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+tutorialRouter.put('/updateComment/:id', async (req, res) => {
+     try {
+        const id = req.params.id;
+        
+        const Count = await updateComment(id,req.body,req.body.tutorialId);
+
+        if (!Count) {
+            return res.status(404).json({ message: "Comment not found" });
+        }
+        res.status(200).json({ message: "Comment updated successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server error");
+    }
 });

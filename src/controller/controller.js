@@ -1,4 +1,6 @@
+const { where } = require('sequelize');
 const db = require('../config/db');
+const tutorial = require('../models/tutorial');
 const Tutorial = db.tutorials;
 const Comment = db.comments;
 
@@ -45,7 +47,7 @@ const GetAllTutorial = async () =>  {
 };
 
  const findTutorialById = (tutorialId) => {
-  return Tutorial.findByPk(tutorialId, { include: ["comments"] })
+  return Tutorial.findByPk(tutorialId)
     .then((tutorial) => {
       return tutorial;
     })
@@ -62,4 +64,67 @@ const findCommentById = (id) => {
       console.log(">> Error while finding comment: ", err);
     });
 };
-module.exports = { createTutorial ,createComment,GetAllTutorial,findTutorialById,findCommentById};
+const deleteTutorialById = async (id) => {
+  try {
+    const tutorial = await Tutorial.findByPk(id);
+    if (!tutorial) {
+      console.log("Tutorial not found");
+      return null;
+    }
+    await tutorial.destroy();
+    console.log("Tutorial deleted successfully");
+    return tutorial;
+  } catch (err) {
+    console.log(">> Error while deleting tutorial: ", err);
+  }
+};
+const deleteCommentById = async (id) => {
+  try {
+    const comment = await Comment.findByPk(id);
+    if (!comment) {
+      console.log("Comment not found");
+      return null;
+    }
+    await comment.destroy();
+    console.log("Comment deleted successfully");
+    return comment;
+  } catch (err) {
+    console.log(">> Error while deleting comment: ", err);
+  }
+};
+const updateTutorial = async (id,tutorial,) => {
+  try {
+    const currenttutorial = await Tutorial.findByPk(id);
+    if (!currenttutorial) {
+      console.log("Tutorial not found");
+      return null;
+    }
+    await currenttutorial.update({
+       title: tutorial.title,
+      description: tutorial.description,
+    });
+    console.log("Tutorial deleted successfully");
+    return currenttutorial;
+  } catch (err) {
+    console.log(">> Error while deleting comment: ", err);
+  }
+};
+const updateComment = async (id,comment,tutorialId) => {
+  try {
+    const Currentcomment = await Comment.findByPk(id);
+    if (!Currentcomment) {
+      console.log("Comment not found");
+      return null;
+    }
+    await comment.update({
+        name: comment.name,
+        text: comment.text,
+        tutorialId: tutorialId
+    });
+    console.log("Comment deleted successfully");
+    return comment;
+  } catch (err) {
+    console.log(">> Error while deleting comment: ", err);
+  }
+};
+module.exports = { createTutorial ,createComment,GetAllTutorial,findTutorialById,findCommentById,deleteTutorialById,deleteCommentById,updateComment,updateTutorial};
